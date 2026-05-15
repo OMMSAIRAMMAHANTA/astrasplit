@@ -2,1178 +2,518 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstraBill - Professional Electricity Bill Predictor</title>
-    
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AstraSplit - Premium Trip Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        display: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#6366f1',
-                        primaryHover: '#4f46e5',
-                        secondary: '#14b8a6',
-                        dark: '#0b1120',
-                    },
-                    animation: {
-                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in': 'fadeIn 0.6s ease-out forwards',
-                        'toast-in': 'toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'toast-out': 'toastOut 0.3s ease-in forwards',
-                    },
-                    keyframes: {
-                        slideUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        toastIn: { '0%': { opacity: '0', transform: 'translateX(100%)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
-                        toastOut: { '0%': { opacity: '1', transform: 'translateX(0)' }, '100%': { opacity: '0', transform: 'translateX(100%)' } },
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
         body {
-            background-color: #0b1120;
-            background-image: 
-                linear-gradient(to bottom, rgba(11, 17, 32, 0.7), rgba(11, 17, 32, 0.95)),
-                url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #f8fafc;
-            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #EFF6FF 0%, #EEF2FF 50%, #F8FAFC 100%);
+            -webkit-font-smoothing: antialiased;
+            color: #1e293b;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, .font-poppins {
+            font-family: 'Poppins', sans-serif;
         }
         
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        /* Ambient Glow Backgrounds - Adjusted for Light Theme */
+        .ambient-orb-1 {
+            position: fixed; top: -10%; left: -10%; width: 300px; height: 300px;
+            background: #2563EB; /* Primary Blue */
+            border-radius: 50%; filter: blur(120px);
+            opacity: 0.15; z-index: -1; animation: pulseOrb 8s infinite alternate;
+        }
+        .ambient-orb-2 {
+            position: fixed; bottom: -10%; right: -10%; width: 300px; height: 300px;
+            background: #4F46E5; /* Soft Indigo */
+            border-radius: 50%; filter: blur(120px);
+            opacity: 0.15; z-index: -1; animation: pulseOrb 10s infinite alternate-reverse;
+        }
 
+        @keyframes pulseOrb {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(20px, 20px); }
+        }
+        
+        /* Clean Glass Panel */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(37, 99, 235, 0.05); /* Soft Blue Shadow */
         }
 
-        .tab-active {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: #818cf8;
-            box-shadow: inset 0 0 12px rgba(99, 102, 241, 0.1);
+        .expense-card-enter {
+            animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Range Slider */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #6366f1; cursor: pointer; margin-top: -7px; box-shadow: 0 0 12px rgba(99, 102, 241, 0.6); transition: transform 0.2s; }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #1e293b; border-radius: 2px; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Light Mode Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Premium Toast */
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100%);
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border: 1px solid #16A34A; color: #16A34A; /* Success Green */
+            padding: 12px 24px; border-radius: 50px; font-weight: 500; font-size: 14px;
+            box-shadow: 0 10px 25px -5px rgba(22, 163, 74, 0.15);
+            opacity: 0; visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100; display: flex; align-items: center; gap: 8px;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible;
+        }
+
+        /* Input Focus Glows - Light Mode */
+        .input-focus-ring { transition: all 0.3s ease; }
+        .input-focus-ring:focus-within {
+            border-color: #2563EB;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
         
-        .stagger-1 { animation-delay: 100ms; }
-        .stagger-2 { animation-delay: 200ms; }
+        /* Dropdown styling for light mode */
+        select option { background-color: #ffffff; color: #1e293b; }
 
-        /* Print Styles - Light mode & hidden elements */
-        @media print {
-            body { background: white !important; color: black !important; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .glass-panel { background: white !important; border: 1px solid #e2e8f0 !important; box-shadow: none !important; filter: none !important; color: black !important;}
-            * { text-shadow: none !important; box-shadow: none !important; }
-            .text-white { color: black !important; }
-            .text-slate-400 { color: #475569 !important; }
-            .text-slate-300 { color: #334155 !important; }
-            #summary-card { width: 100%; margin: 0 auto; page-break-inside: avoid; border: 2px solid #000 !important;}
+        /* Custom text gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .print-only { display: none; }
-        .input-error { border-color: #ef4444 !important; box-shadow: 0 0 0 1px #ef4444 !important; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-primary selection:text-white overflow-x-hidden relative">
+<body class="min-h-screen pb-24 flex flex-col items-center p-4">
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed top-24 right-4 z-50 flex flex-col gap-3 no-print max-w-sm w-full"></div>
+    <div class="ambient-orb-1"></div>
+    <div class="ambient-orb-2"></div>
 
-    <!-- Onboarding Modal -->
-    <div id="onboarding-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0 no-print">
-        <div class="glass-panel bg-slate-900/90 rounded-3xl p-8 w-full max-w-lg border border-primary/30 relative shadow-[0_0_50px_rgba(99,102,241,0.2)] text-center">
-            <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fa-solid fa-bolt text-3xl text-primary"></i>
-            </div>
-            <h2 class="text-3xl font-display font-bold text-white mb-2">Welcome to AstraBill</h2>
-            <p class="text-slate-400 mb-8 leading-relaxed">Your smart, presentation-ready electricity bill predictor. Follow 3 simple steps to get an accurate forecast of your usage.</p>
-            
-            <div class="flex justify-between items-center text-sm font-semibold text-slate-500 mb-8 max-w-xs mx-auto relative">
-                <div class="absolute left-0 top-1/2 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2"></div>
-                <div class="flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]">1</div><span>Tariff</span></div>
-                <div class="flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">2</div><span>Usage</span></div>
-                <div class="flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">3</div><span>Predict</span></div>
-            </div>
-
-            <div class="flex gap-4">
-                <button onclick="closeOnboarding(true)" class="flex-1 py-3.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors">Skip Tutorial</button>
-                <button onclick="closeOnboarding(false)" class="flex-1 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-primary to-primaryHover text-white shadow-lg shadow-primary/25 hover:-translate-y-0.5 transition-all">Get Started <i class="fa-solid fa-arrow-right ml-2"></i></button>
-            </div>
+    <header class="w-full max-w-md py-6 text-center z-10 relative">
+        <div class="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB] font-semibold tracking-widest text-xs mb-3">
+            ASTRASPLIT PRO
         </div>
-    </div>
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Trip <span class="text-gradient">Manager</span></h1>
+    </header>
 
-    <!-- Navbar -->
-    <nav class="glass-panel sticky top-0 z-40 px-6 py-4 flex justify-between items-center border-b border-white/5 no-print">
-        <div class="flex items-center gap-3 cursor-pointer group">
-            <div class="relative flex items-center justify-center h-10 w-10 transition-transform duration-500 group-hover:scale-105 bg-gradient-to-br from-primary to-purple-600 rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.5)]">
-                <i class="fa-solid fa-bolt-lightning text-white text-xl"></i>
-            </div>
-            <h1 class="text-2xl font-display font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">AstraBill</h1>
-        </div>
-        <div class="flex items-center gap-4">
-            <button onclick="showHowItWorks()" class="hidden md:flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors">
-                <i class="fa-solid fa-circle-question"></i> How it works
-            </button>
-            <div class="h-6 w-px bg-slate-700 hidden md:block"></div>
-            <button onclick="resetData()" class="text-sm font-medium text-red-400 hover:text-red-300 transition-colors flex items-center gap-2" title="Reset All Data">
-                <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Reset</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-7xl">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Left Column: Inputs & Controls -->
-            <div class="lg:col-span-7 flex flex-col gap-6 opacity-0 animate-slide-up stagger-1 no-print">
+    <main class="w-full max-w-md space-y-6 z-10 relative">
+        
+        <section class="glass-panel rounded-3xl p-6">
+            <h2 class="text-[14px] font-semibold text-slate-600 mb-4 uppercase tracking-widest flex items-center justify-between w-full">
+                <div class="flex items-center gap-2">
+                    New Expense
+                </div>
+                <button type="button" onclick="openCalc()" class="flex items-center gap-1.5 bg-[#4F46E5]/10 hover:bg-[#4F46E5]/20 border border-[#4F46E5]/20 text-[#4F46E5] px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm active:scale-95">
+                    Calc
+                </button>
+            </h2>
+            <form id="add-form" class="space-y-4">
+                <div class="bg-white/50 border border-slate-200 rounded-2xl flex items-center px-3 input-focus-ring">
+                    <input type="text" id="desc" required placeholder="What was it? (e.g. Snacks)" class="w-full bg-transparent py-3.5 px-3 text-sm outline-none text-slate-800 placeholder-slate-400">
+                </div>
                 
-                <!-- Progress/Tabs -->
-                <div class="glass-panel rounded-2xl p-2 flex overflow-x-auto gap-2 relative z-10">
-                    <button onclick="switchTab('tariff')" id="tab-tariff" class="flex-1 py-3 px-4 text-sm font-semibold rounded-xl transition-all duration-300 tab-active flex items-center justify-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center text-xs">1</span> Tariff
-                    </button>
-                    <button onclick="switchTab('meter')" id="tab-meter" class="flex-1 py-3 px-4 text-sm font-medium rounded-xl transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5 flex items-center justify-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center text-xs">2A</span> Meter
-                    </button>
-                    <button onclick="switchTab('appliance')" id="tab-appliance" class="flex-1 py-3 px-4 text-sm font-medium rounded-xl transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5 flex items-center justify-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center text-xs">2B</span> Devices
-                    </button>
-                </div>
-
-                <!-- Tab Content: Tariff Settings (Step 1) -->
-                <div id="content-tariff" class="glass-panel rounded-3xl p-6 md:p-8 transition-all duration-500">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-xl font-display font-semibold flex items-center gap-3">
-                            <div class="p-2 bg-amber-500/10 rounded-lg text-amber-500"><i class="fa-solid fa-sliders"></i></div> Tariff Configuration
-                        </h2>
-                        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">Auto-Saved</span>
-                    </div>
-                    <p class="text-sm text-slate-400 mb-8">Define your local electricity provider's pricing slabs. Auto-formats and prevents overlapping.</p>
-
-                    <div class="space-y-6">
-                        <div>
-                            <div class="flex justify-between items-center mb-4">
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">Pricing Slabs (₹/kWh)</label>
-                                <button onclick="addSlab()" class="text-sm font-semibold text-primary hover:text-primaryHover transition-colors flex items-center gap-1"><i class="fa-solid fa-plus"></i> Add Slab</button>
-                            </div>
-                            <div id="slabs-container" class="space-y-3">
-                                <!-- Populated by JS -->
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
-                            <div class="group">
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Monthly Fixed Charge</label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">₹</span>
-                                    <input type="number" id="fixed-charge" min="0" oninput="debounceCalc()" class="w-full bg-slate-900/60 border border-slate-700/50 rounded-xl pl-8 pr-4 py-3.5 text-white font-medium focus:outline-none focus:border-primary focus:bg-slate-900 transition-all">
-                                </div>
-                            </div>
-                            <div class="group">
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Tax / Duty (%)</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-percent absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                                    <input type="number" id="tax-rate" min="0" max="100" oninput="debounceCalc()" class="w-full bg-slate-900/60 border border-slate-700/50 rounded-xl pl-10 pr-4 py-3.5 text-white font-medium focus:outline-none focus:border-primary focus:bg-slate-900 transition-all">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-end">
-                        <button onclick="switchTab('meter')" class="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">Next Step <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                </div>
-
-                <!-- Tab Content: Meter Reading (Step 2A) -->
-                <div id="content-meter" class="glass-panel rounded-3xl p-6 md:p-8 hidden opacity-0 translate-y-4 transition-all duration-500">
-                    <h2 class="text-xl font-display font-semibold mb-2 flex items-center gap-3">
-                        <div class="p-2 bg-primary/10 rounded-lg text-primary"><i class="fa-solid fa-gauge-high"></i></div> Meter Calculator
-                    </h2>
-                    <p class="text-sm text-slate-400 mb-8">Enter readings to calculate actual consumed units.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Previous Reading</label>
-                            <input type="number" id="prev-reading" min="0" placeholder="e.g., 14500" class="w-full bg-slate-900/60 border border-slate-700/50 rounded-xl px-4 py-4 text-white font-medium focus:outline-none focus:border-primary transition-all" oninput="validateMeter(); debounceCalc()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Current Reading</label>
-                            <input type="number" id="curr-reading" min="0" placeholder="e.g., 14850" class="w-full bg-slate-900/60 border border-slate-700/50 rounded-xl px-4 py-4 text-white font-medium focus:outline-none focus:border-primary transition-all" oninput="validateMeter(); debounceCalc()">
-                            <p id="meter-error" class="text-red-400 text-xs mt-2 hidden"><i class="fa-solid fa-circle-exclamation"></i> Current must be > Previous</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 p-6 bg-slate-800/30 rounded-2xl border border-white/5 flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Consumed</p>
-                            <p class="text-4xl font-display font-bold text-white mt-1"><span id="meter-units-display">0</span> <span class="text-base text-slate-500 font-medium">kWh</span></p>
-                        </div>
-                        <div class="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary text-2xl"><i class="fa-solid fa-bolt"></i></div>
-                    </div>
-                </div>
-
-                <!-- Tab Content: Smart Appliances (Step 2B) -->
-                <div id="content-appliance" class="glass-panel rounded-3xl p-6 md:p-8 hidden opacity-0 translate-y-4 transition-all duration-500 flex flex-col h-[650px]">
-                    <div class="flex justify-between items-center mb-6 shrink-0">
-                        <h2 class="text-xl font-display font-semibold flex items-center gap-3">
-                            <div class="p-2 bg-secondary/10 rounded-lg text-secondary"><i class="fa-solid fa-microchip"></i></div> Device Predictor
-                        </h2>
-                        <button onclick="openAddApplianceModal()" class="bg-gradient-to-r from-primary to-primaryHover text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 shadow-lg shadow-primary/25 hover:-translate-y-0.5"><i class="fa-solid fa-plus mr-1"></i> Add</button>
+                <div class="flex gap-3">
+                    <div class="bg-white/50 border border-slate-200 rounded-2xl flex items-center px-3 input-focus-ring w-1/2">
+                        <span class="text-lg font-bold text-[#2563EB]">₹</span>
+                        <input type="number" id="amt" required min="1" placeholder="Amount" class="w-full bg-transparent py-3.5 px-2 text-sm outline-none text-slate-800 placeholder-slate-400">
                     </div>
                     
-                    <div class="relative mb-6 shrink-0">
-                        <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                        <input type="text" id="appliance-search" oninput="renderApplianceList()" placeholder="Search your devices..." class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors">
-                    </div>
-
-                    <!-- Scrollable Appliance List -->
-                    <div class="space-y-3 overflow-y-auto pr-2 flex-grow hide-scrollbar" id="appliance-list">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <div class="mt-6 p-5 bg-slate-800/30 rounded-2xl border border-white/5 flex items-center justify-between shrink-0">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Monthly Load Estimate</p>
-                            <p class="text-2xl font-display font-bold text-white mt-1"><span id="appliance-units-display">0.0</span> <span class="text-sm text-slate-500">kWh</span></p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs text-slate-400">Highest consumer</p>
-                            <p id="highest-consumer-name" class="text-sm font-semibold text-secondary mt-1">None</p>
-                        </div>
+                    <div class="bg-white/50 border border-slate-200 rounded-2xl flex items-center px-2 input-focus-ring w-1/2">
+                        <select id="payer" class="w-full bg-transparent py-3.5 px-2 text-sm outline-none text-slate-700 font-medium cursor-pointer">
+                            <option value="Omm">Omm</option>
+                            <option value="Satyapragnya">Satya</option>
+                            <option value="Biswaranjan">Biswa</option>
+                            <option value="Neeraj">Neeraj</option>
+                        </select>
                     </div>
                 </div>
-
-            </div>
-
-            <!-- Right Column: Results & Analytics (Step 3) -->
-            <div class="lg:col-span-5 flex flex-col gap-6 opacity-0 animate-slide-up stagger-2" id="summary-card">
                 
-                <!-- Bill Summary Card -->
-                <div class="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden group">
-                    <!-- Badges -->
-                    <div class="absolute top-6 right-6 flex flex-col items-end gap-2 no-print">
-                        <div id="efficiency-badge" class="px-3 py-1.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-1.5 bg-slate-800 text-slate-400 border border-slate-700 transition-colors">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i> Calculating...
-                        </div>
-                    </div>
-                    
-                    <div class="print-only mb-6 text-center">
-                        <h1 class="text-2xl font-bold text-black border-b border-black pb-2">Electricity Bill Estimate</h1>
-                        <p class="text-sm text-gray-600 mt-2">Generated by AstraBill Predictor</p>
-                    </div>
+                <button type="submit" class="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold py-4 rounded-2xl transition-all shadow-[0_4px_15px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.3)] active:scale-[0.98] tracking-wide mt-2">
+                    Add to Bill
+                </button>
+            </form>
+        </section>
 
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-6">
-                        <i class="fa-solid fa-file-invoice text-primary no-print"></i> Estimated Monthly Bill
-                    </h3>
-                    
-                    <div class="flex items-baseline gap-2 mb-2">
-                        <span class="text-3xl font-semibold text-slate-400">₹</span>
-                        <span class="text-6xl font-display font-bold text-white tracking-tight" id="total-bill">0.00</span>
-                    </div>
-                    <p class="text-sm text-slate-500 mb-6 pb-6 border-b border-white/10 flex justify-between items-center">
-                        <span>Yearly Projection: <span id="yearly-projection" class="font-semibold text-slate-300">₹0.00</span></span>
-                    </p>
-
-                    <div class="space-y-3 text-sm font-medium mb-6">
-                        <div class="flex justify-between items-center p-2 rounded hover:bg-white/5">
-                            <span class="text-slate-400">Energy Charges (<span id="summary-units">0</span> kWh)</span>
-                            <span class="text-white" id="summary-energy-charge">₹0.00</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2 rounded hover:bg-white/5">
-                            <span class="text-slate-400">Fixed Charges</span>
-                            <span class="text-white" id="summary-fixed-charge">₹0.00</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2 rounded hover:bg-white/5">
-                            <span class="text-slate-400">Taxes & Duty (<span id="summary-tax-percent">0</span>%)</span>
-                            <span class="text-white" id="summary-tax-amount">₹0.00</span>
-                        </div>
-                    </div>
-
-                    <button onclick="openBreakdownModal()" class="w-full py-3 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 border border-white/5 text-sm font-semibold text-slate-300 transition-colors flex justify-center items-center gap-2 mb-4 no-print">
-                        <i class="fa-solid fa-calculator"></i> View Calculation Breakdown
-                    </button>
-
-                    <!-- Action Buttons -->
-                    <div class="grid grid-cols-2 gap-3 no-print">
-                        <button onclick="copyBill()" id="copy-btn" class="py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-regular fa-copy"></i> Copy Data
-                        </button>
-                        <button onclick="window.print()" class="py-2.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> Export / Print
-                        </button>
-                    </div>
+        <section class="glass-panel rounded-3xl p-6 border-t border-slate-200 relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#2563EB] to-transparent opacity-20"></div>
+            
+            <div class="flex justify-between items-end mb-5">
+                <h2 class="text-[14px] font-semibold text-slate-600 uppercase tracking-widest flex items-center gap-2">
+                    Settlements
+                </h2>
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Total Spent</p>
+                    <p class="text-2xl font-bold text-[#2563EB]" id="ui-total">₹0</p>
                 </div>
-
-                <!-- Charts Container -->
-                <div class="glass-panel rounded-3xl p-6 no-print">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-chart-pie mr-2"></i> Analytics</h3>
-                        <div class="flex bg-slate-900 rounded-lg p-1">
-                            <button onclick="toggleChart('cost')" id="btn-chart-cost" class="px-3 py-1 rounded-md text-xs font-semibold bg-slate-700 text-white shadow">Cost</button>
-                            <button onclick="toggleChart('units')" id="btn-chart-units" class="px-3 py-1 rounded-md text-xs font-semibold text-slate-400 hover:text-white">Usage</button>
-                        </div>
-                    </div>
-                    <div class="h-52 relative w-full flex justify-center" id="chart-container">
-                        <canvas id="mainChart"></canvas>
-                    </div>
-                </div>
-
             </div>
-        </div>
+
+            <!-- Settlement List -->
+            <div id="ui-settlements" class="bg-slate-100/50 rounded-2xl p-4 border border-slate-200 space-y-3 mb-6">
+                <p class="text-center text-sm text-slate-400 py-3 font-light">Awaiting first transaction...</p>
+            </div>
+            
+            <!-- Expense History -->
+            <div>
+                <h3 class="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <span class="w-full h-px bg-slate-200"></span>
+                    History
+                    <span class="w-full h-px bg-slate-200"></span>
+                </h3>
+                <div id="ui-history" class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Calculation Breakdown Modal -->
-    <div id="breakdown-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0 no-print">
-        <div class="glass-panel bg-slate-900/95 rounded-3xl p-6 md:p-8 w-full max-w-lg border border-white/10 relative shadow-2xl">
-            <button onclick="closeBreakdownModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-xl font-display font-bold text-white mb-6 border-b border-white/10 pb-4">Formula & Breakdown</h3>
-            
-            <div id="breakdown-content" class="space-y-4 text-sm">
-                <!-- Populated dynamically -->
-            </div>
-            
-            <div class="mt-6 pt-4 border-t border-white/10 bg-slate-800/30 p-4 rounded-xl">
-                <p class="text-xs text-slate-400 mb-1">Standard Formula:</p>
-                <code class="text-xs text-primary font-mono block mb-2">(Σ Slab Cost) + Fixed Charge + Tax = Total</code>
-                <p class="text-xs text-slate-500">* All values are estimates based on provided tariff rates.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Appliance Modal -->
-    <div id="add-appliance-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0 no-print">
-        <div class="glass-panel bg-slate-900/95 rounded-3xl p-6 w-full max-w-md border border-white/10 relative shadow-2xl">
-            <button onclick="closeAddApplianceModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-xl font-display font-bold text-white mb-6">Add Smart Device</h3>
-            
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Presets</label>
-                    <div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
-                        <button type="button" onclick="selectPreset('ac')" class="preset-btn shrink-0 p-2 rounded-xl bg-slate-800 border border-white/5 hover:border-primary flex flex-col items-center gap-1 w-16">
-                            <i class="fa-solid fa-snowflake text-primary"></i><span class="text-[9px] uppercase">AC</span>
-                        </button>
-                        <button type="button" onclick="selectPreset('fridge')" class="preset-btn shrink-0 p-2 rounded-xl bg-slate-800 border border-white/5 hover:border-primary flex flex-col items-center gap-1 w-16">
-                            <i class="fa-solid fa-icicles text-teal-400"></i><span class="text-[9px] uppercase">Fridge</span>
-                        </button>
-                        <button type="button" onclick="selectPreset('tv')" class="preset-btn shrink-0 p-2 rounded-xl bg-slate-800 border border-white/5 hover:border-primary flex flex-col items-center gap-1 w-16">
-                            <i class="fa-solid fa-tv text-purple-400"></i><span class="text-[9px] uppercase">TV</span>
-                        </button>
-                        <button type="button" onclick="selectPreset('fan')" class="preset-btn shrink-0 p-2 rounded-xl bg-slate-800 border border-white/5 hover:border-primary flex flex-col items-center gap-1 w-16">
-                            <i class="fa-solid fa-fan text-slate-300"></i><span class="text-[9px] uppercase">Fan</span>
-                        </button>
-                        <button type="button" onclick="selectPreset('heater')" class="preset-btn shrink-0 p-2 rounded-xl bg-slate-800 border border-white/5 hover:border-primary flex flex-col items-center gap-1 w-16">
-                            <i class="fa-solid fa-fire text-red-400"></i><span class="text-[9px] uppercase">Heater</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Device Name</label>
-                    <input type="text" id="new-app-name" placeholder="e.g., Gaming PC" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-primary focus:outline-none">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Power (Watts)</label>
-                        <input type="number" id="new-app-power" placeholder="1500" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-primary focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Quantity</label>
-                        <input type="number" id="new-app-qty" value="1" min="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-primary focus:outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="flex justify-between text-xs font-semibold uppercase text-slate-400 mb-2">
-                        <span>Daily Usage</span><span class="text-primary"><span id="modal-hours-display">8</span> Hours</span>
-                    </label>
-                    <input type="range" id="new-app-hours" min="0" max="24" step="0.5" value="8" oninput="document.getElementById('modal-hours-display').innerText = this.value">
-                </div>
-
-                <button onclick="addAppliance()" class="w-full bg-primary hover:bg-primaryHover text-white font-semibold py-3 rounded-xl transition-colors mt-2 shadow-lg flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-check"></i> Save Device
+    <div id="calc-modal" class="fixed inset-0 bg-[#F8FAFC]/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="glass-panel p-5 rounded-3xl w-full max-w-[320px] transform scale-95 transition-transform duration-300 border border-slate-200 shadow-xl" id="calc-container">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">Calculator</h3>
+                <button type="button" onclick="closeCalc()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
+            
+            <!-- Calc Screen -->
+            <div class="bg-white border border-slate-200 p-4 rounded-2xl mb-5 text-right text-3xl font-medium text-[#2563EB] break-all overflow-hidden shadow-inner flex items-center justify-end min-h-[75px] tracking-wider" id="calc-screen">0</div>
+            
+            <!-- Calc Keys -->
+            <div class="grid grid-cols-4 gap-3 mb-5">
+                <button type="button" class="bg-[#DC2626]/10 border border-[#DC2626]/20 text-[#DC2626] font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-lg hover:bg-[#DC2626]/20" onclick="calcAction('C')">C</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-600 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-lg hover:bg-slate-50" onclick="calcAction('del')">⌫</button>
+                <button type="button" class="bg-[#4F46E5]/10 border border-[#4F46E5]/20 text-[#4F46E5] font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-2xl leading-none hover:bg-[#4F46E5]/20" onclick="calcAction('÷')">÷</button>
+                <button type="button" class="bg-[#4F46E5]/10 border border-[#4F46E5]/20 text-[#4F46E5] font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-2xl leading-none hover:bg-[#4F46E5]/20" onclick="calcAction('×')">×</button>
+                
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('7')">7</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('8')">8</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('9')">9</button>
+                <button type="button" class="bg-[#4F46E5]/10 border border-[#4F46E5]/20 text-[#4F46E5] font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-2xl leading-none hover:bg-[#4F46E5]/20" onclick="calcAction('-')">-</button>
+                
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('4')">4</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('5')">5</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('6')">6</button>
+                <button type="button" class="bg-[#4F46E5]/10 border border-[#4F46E5]/20 text-[#4F46E5] font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-2xl leading-none hover:bg-[#4F46E5]/20" onclick="calcAction('+')">+</button>
+                
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('1')">1</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('2')">2</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('3')">3</button>
+                <button type="button" class="bg-[#2563EB] text-white font-medium p-3 rounded-2xl shadow-[0_4px_10px_rgba(37,99,235,0.3)] active:scale-95 transition-all text-2xl row-span-2 hover:bg-[#1D4ED8]" onclick="calcAction('=')">=</button>
+                
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl col-span-2 hover:bg-slate-50" onclick="calcAction('0')">0</button>
+                <button type="button" class="bg-white border border-slate-200 text-slate-700 font-medium p-3 rounded-2xl shadow-sm active:scale-95 transition-all text-xl hover:bg-slate-50" onclick="calcAction('.')">.</button>
+            </div>
+            
+            <button type="button" onclick="useCalcValue()" class="w-full bg-[#16A34A] hover:bg-[#15803D] text-white font-semibold py-3.5 rounded-2xl transition-all shadow-[0_4px_15px_rgba(22,163,74,0.25)] active:scale-[0.98] flex justify-center items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Use in Bill
+            </button>
         </div>
     </div>
 
-    <!-- Info Modal -->
-    <div id="info-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity">
-        <div class="glass-panel bg-slate-900/95 rounded-2xl p-6 w-full max-w-md border border-white/10">
-             <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-graduation-cap text-primary mr-2"></i> How Billing Works</h3>
-             <div class="space-y-4 text-sm text-slate-300">
-                 <p><strong>1 kWh = 1 Unit:</strong> Using a 1000 Watt appliance for 1 hour consumes 1 unit (kWh) of electricity.</p>
-                 <p><strong>Slab Billing:</strong> Electricity is charged progressively. The first few units are cheap, and as you use more, the rate per unit increases. This encourages saving energy.</p>
-                 <p><strong>Fixed Charge:</strong> A basic monthly fee for maintaining your connection, regardless of usage.</p>
-             </div>
-             <button onclick="document.getElementById('info-modal').classList.remove('opacity-100'); setTimeout(()=>document.getElementById('info-modal').classList.add('hidden'), 300);" class="mt-6 w-full py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white font-medium transition-colors">Got it</button>
-        </div>
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC] to-transparent pb-6 flex justify-center z-40">
+        <button onclick="shareToGroup()" class="w-full max-w-md bg-[#16A34A] hover:bg-[#15803D] text-white font-semibold py-4 px-4 rounded-2xl shadow-[0_6px_20px_rgba(22,163,74,0.25)] transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-[15px]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            Send Bill via WhatsApp
+        </button>
+    </div>
+
+    <!-- Custom Toast -->
+    <div id="toast">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toast-msg">Success!</span>
     </div>
 
     <script>
-        // --- State Management with LocalStorage ---
-        const STORAGE_KEY = 'astrabill_v2_data';
-        
-        let state = {
-            currentMode: 'tariff',
-            chartView: 'cost', // 'cost' or 'units'
-            totalUnits: 0,
-            billDetails: { energyCharge: 0, fixedCharge: 0, taxAmount: 0, total: 0, slabBreakdown: [] },
-            
-            // User Inputs
-            fixedCharge: 150,
-            taxRate: 5,
-            prevReading: null,
-            currReading: null,
-            tariffSlabs: [
-                { id: 1, limit: 100, rate: 3.50 },
-                { id: 2, limit: 300, rate: 5.00 },
-                { id: 3, limit: 500, rate: 7.50 },
-                { id: 4, limit: 999999, rate: 10.00 }
-            ],
-            appliances: [
-                { id: 1, name: 'Air Conditioner', power: 1500, qty: 1, hours: 6, icon: 'fa-snowflake', color: '#6366f1', monthlyConsumption: 270 },
-                { id: 2, name: 'Refrigerator', power: 250, qty: 1, hours: 24, icon: 'fa-icicles', color: '#14b8a6', monthlyConsumption: 180 },
-                { id: 3, name: 'Ceiling Fan', power: 75, qty: 3, hours: 12, icon: 'fa-fan', color: '#94a3b8', monthlyConsumption: 81 }
-            ]
+        const friends = ["Omm", "Satyapragnya", "Biswaranjan", "Neeraj"];
+        const fullNames = { 
+            "Omm": "Omm Sairam Mahanta", 
+            "Satyapragnya": "Satyapragnya Samal", 
+            "Biswaranjan": "Biswaranjan Sahoo", 
+            "Neeraj": "Neeraj Behera" 
         };
+        let expenses = [];
 
-        // Cache for animation
-        let prevBillAmount = 0;
-        let mainChartInstance = null;
-        let notifiedSlabs = new Set();
-        let calcTimeout = null;
+        document.getElementById('add-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const desc = document.getElementById('desc').value;
+            const amount = parseFloat(document.getElementById('amt').value);
+            const payer = document.getElementById('payer').value;
 
-        // --- Presets ---
-        const presetAppliances = {
-            'ac': { name: 'AC (1.5 Ton)', power: 1500, icon: 'fa-snowflake', color: '#6366f1' },
-            'fridge': { name: 'Refrigerator', power: 250, icon: 'fa-icicles', color: '#14b8a6' },
-            'tv': { name: 'LED TV', power: 100, icon: 'fa-tv', color: '#a855f7' },
-            'fan': { name: 'Ceiling Fan', power: 75, icon: 'fa-fan', color: '#94a3b8' },
-            'heater': { name: 'Water Heater', power: 2000, icon: 'fa-fire', color: '#ef4444' }
-        };
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            loadSession();
-            checkOnboarding();
-            initChart();
-            renderTariffSettings();
-            renderApplianceList();
+            expenses.push({ id: Date.now(), desc, amount, payer });
             
-            // Set initial inputs
-            document.getElementById('fixed-charge').value = state.fixedCharge;
-            document.getElementById('tax-rate').value = state.taxRate;
-            if(state.prevReading) document.getElementById('prev-reading').value = state.prevReading;
-            if(state.currReading) document.getElementById('curr-reading').value = state.currReading;
-
-            switchTab(state.currentMode);
+            document.getElementById('desc').value = '';
+            document.getElementById('amt').value = '';
+            document.getElementById('desc').focus();
+            
+            processData();
         });
 
-        function loadSession() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if(saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    state = { ...state, ...parsed };
-                } catch(e) { console.error("Error loading session", e); }
-            }
+        function deleteExpense(id) {
+            expenses = expenses.filter(e => e.id !== id);
+            processData();
         }
 
-        function saveSession() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                fixedCharge: state.fixedCharge,
-                taxRate: state.taxRate,
-                prevReading: state.prevReading,
-                currReading: state.currReading,
-                tariffSlabs: state.tariffSlabs,
-                appliances: state.appliances,
-                currentMode: state.currentMode
-            }));
-        }
-
-        function resetData() {
-            if(confirm("Are you sure you want to reset all data back to defaults?")) {
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload();
-            }
-        }
-
-        // --- Onboarding & Modals ---
-        function checkOnboarding() {
-            if(!localStorage.getItem('astrabill_onboarded')) {
-                const modal = document.getElementById('onboarding-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                setTimeout(() => modal.classList.add('opacity-100'), 100);
-            }
-        }
-
-        function closeOnboarding(skipped) {
-            localStorage.setItem('astrabill_onboarded', 'true');
-            const modal = document.getElementById('onboarding-modal');
-            modal.classList.remove('opacity-100');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-            if(!skipped) switchTab('tariff');
-        }
-
-        function showHowItWorks() {
-            const modal = document.getElementById('info-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => modal.classList.add('opacity-100'), 50);
-        }
-
-        // --- Notifications (Toasts) ---
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
+        function processData() {
+            let total = 0;
+            let paidMap = { "Omm": 0, "Satyapragnya": 0, "Biswaranjan": 0, "Neeraj": 0 };
             
-            let icon = 'fa-info-circle';
-            let colorClass = 'border-primary/50 bg-slate-900/90 shadow-primary/20 text-white';
-            
-            if(type === 'warning') { icon = 'fa-triangle-exclamation'; colorClass = 'border-amber-500/50 bg-slate-900/90 shadow-amber-500/20 text-amber-100'; }
-            if(type === 'alert') { icon = 'fa-circle-exclamation'; colorClass = 'border-red-500/50 bg-slate-900/90 shadow-red-500/20 text-red-100'; }
-            if(type === 'success') { icon = 'fa-check-circle'; colorClass = 'border-secondary/50 bg-slate-900/90 shadow-secondary/20 text-teal-100'; }
-
-            toast.className = `flex items-center gap-3 p-4 rounded-xl border backdrop-blur-md shadow-lg animate-toast-in ${colorClass}`;
-            toast.innerHTML = `<i class="fa-solid ${icon} text-lg shrink-0"></i> <p class="text-sm font-medium leading-tight">${message}</p>`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.replace('animate-toast-in', 'animate-toast-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        // --- Core UI & Navigation ---
-        function switchTab(tabId) {
-            state.currentMode = tabId;
-            saveSession();
-            
-            // Buttons UI
-            ['tariff', 'meter', 'appliance'].forEach(id => {
-                const btn = document.getElementById(`tab-${id}`);
-                const content = document.getElementById(`content-${id}`);
-                
-                if(id === tabId) {
-                    btn.classList.add('tab-active');
-                    btn.classList.remove('text-slate-400', 'border-transparent');
-                    content.classList.remove('hidden');
-                    setTimeout(() => {
-                        content.classList.remove('opacity-0', 'translate-y-4');
-                    }, 20);
-                } else {
-                    btn.classList.remove('tab-active');
-                    btn.classList.add('text-slate-400', 'border-transparent');
-                    content.classList.add('hidden', 'opacity-0', 'translate-y-4');
-                }
+            expenses.forEach(exp => {
+                total += exp.amount;
+                paidMap[exp.payer] += exp.amount;
             });
 
-            calculateBillEngine();
-        }
+            const perHead = total / 4;
+            let debtors = [];
+            let creditors = [];
 
-        // --- Formatting & Animation ---
-        function formatNumber(num) {
-            return num.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-        }
+            friends.forEach(f => {
+                let net = paidMap[f] - perHead;
+                if(net < -0.01) debtors.push({ name: f, amount: Math.abs(net) });
+                else if(net > 0.01) creditors.push({ name: f, amount: net });
+            });
 
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id);
-            if(!obj) return;
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 4); // easeOutQuart
-                const current = start + (end - start) * ease;
-                
-                if(id === 'total-bill') obj.innerText = formatNumber(current);
-                else if(id.includes('units') || id === 'summary-tax-percent') obj.innerText = current.toFixed(1);
-                else obj.innerText = '₹' + formatNumber(current);
-                
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
-        }
+            debtors.sort((a,b) => b.amount - a.amount);
+            creditors.sort((a,b) => b.amount - a.amount);
 
-        function toggleSpinner(show) {
-            const badge = document.getElementById('efficiency-badge');
-            if(show) {
-                badge.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-primary"></i> Calculating...';
-                badge.className = 'px-3 py-1.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-1.5 bg-slate-800 border border-slate-700 text-slate-400';
-            }
-        }
+            let settlements = [];
+            let i = 0, j = 0;
 
-        // --- Calculation Engine ---
-        function debounceCalc() {
-            clearTimeout(calcTimeout);
-            calcTimeout = setTimeout(calculateBillEngine, 300);
-        }
-
-        function validateMeter() {
-            const prev = parseFloat(document.getElementById('prev-reading').value) || 0;
-            const curr = parseFloat(document.getElementById('curr-reading').value) || 0;
-            const inputCurr = document.getElementById('curr-reading');
-            const err = document.getElementById('meter-error');
-            
-            // Don't validate if current is empty
-            if(document.getElementById('curr-reading').value === '') {
-                inputCurr.classList.remove('input-error');
-                err.classList.add('hidden');
-                return true;
-            }
-
-            if(curr < prev && prev > 0) {
-                inputCurr.classList.add('input-error');
-                err.classList.remove('hidden');
-                return false;
-            } else {
-                inputCurr.classList.remove('input-error');
-                err.classList.add('hidden');
-                return true;
-            }
-        }
-
-        function calculateBillEngine() {
-            toggleSpinner(true);
-            
-            // 1. Update basic inputs
-            state.fixedCharge = parseFloat(document.getElementById('fixed-charge').value) || 0;
-            state.taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
-            state.prevReading = parseFloat(document.getElementById('prev-reading').value) || 0;
-            state.currReading = parseFloat(document.getElementById('curr-reading').value) || 0;
-            
-            // 2. Determine Units
-            if(state.currentMode === 'meter') {
-                if(validateMeter()) {
-                    state.totalUnits = Math.max(0, state.currReading - state.prevReading);
-                } else {
-                    state.totalUnits = 0;
-                }
-            } 
-            else if(state.currentMode === 'appliance') {
-                let monthlyUnits = 0;
-                let highestApp = null;
-                state.appliances.forEach(app => {
-                    let monthly = ((app.power * app.hours * app.qty) / 1000) * 30;
-                    app.monthlyConsumption = monthly;
-                    monthlyUnits += monthly;
-                    if(!highestApp || monthly > highestApp.monthlyConsumption) highestApp = app;
-                });
-                state.totalUnits = monthlyUnits;
-
-                // Smart Alert: Appliance contributing > 45%
-                if(highestApp && monthlyUnits > 0) {
-                    let percent = (highestApp.monthlyConsumption / monthlyUnits) * 100;
-                    document.getElementById('highest-consumer-name').innerText = `${highestApp.name} (${percent.toFixed(0)}%)`;
-                    if(percent > 45 && highestApp.monthlyConsumption > 50 && !notifiedSlabs.has('app_alert')) {
-                        showToast(`Your ${highestApp.name} contributes ${percent.toFixed(0)}% to your bill.`, 'warning');
-                        notifiedSlabs.add('app_alert');
-                    }
-                } else {
-                    document.getElementById('highest-consumer-name').innerText = "None";
-                }
-            }
-
-            // 3. Slab Logic
-            let remainingUnits = state.totalUnits;
-            let energyCharge = 0;
-            let previousLimit = 0;
-            let breakdown = [];
-            let sortedSlabs = [...state.tariffSlabs].sort((a, b) => a.limit - b.limit);
-            
-            // Check Slab proximity warning
-            if(state.totalUnits > 0) {
-                for (let i = 0; i < sortedSlabs.length; i++) {
-                    if (state.totalUnits < sortedSlabs[i].limit && (sortedSlabs[i].limit - state.totalUnits) <= 20) {
-                        if(!notifiedSlabs.has(`slab_${sortedSlabs[i].id}`)) {
-                            let diff = (sortedSlabs[i].limit - state.totalUnits).toFixed(1);
-                            showToast(`Warning: You are ${diff} units away from a higher tariff rate (₹${sortedSlabs[i].rate}/u).`, 'alert');
-                            notifiedSlabs.add(`slab_${sortedSlabs[i].id}`);
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // Calculation
-            for (let i = 0; i < sortedSlabs.length; i++) {
-                let slab = sortedSlabs[i];
-                let slabSize = slab.limit - previousLimit;
-                
-                if (remainingUnits > 0) {
-                    let unitsInSlab = Math.min(remainingUnits, slabSize);
-                    let cost = unitsInSlab * slab.rate;
-                    energyCharge += cost;
-                    remainingUnits -= unitsInSlab;
-                    
-                    let rangeName = slab.limit > 900000 ? `Above ${previousLimit}` : `${previousLimit+1} - ${slab.limit}`;
-                    if(previousLimit === 0) rangeName = `0 - ${slab.limit}`;
-
-                    breakdown.push({
-                        range: rangeName,
-                        units: unitsInSlab.toFixed(1),
-                        rate: slab.rate.toFixed(2),
-                        cost: cost.toFixed(2)
+            while(i < debtors.length && j < creditors.length) {
+                let transfer = Math.min(debtors[i].amount, creditors[j].amount);
+                if(transfer > 0.01) {
+                    settlements.push({
+                        from: debtors[i].name,
+                        to: creditors[j].name,
+                        amount: Math.round(transfer)
                     });
                 }
-                previousLimit = slab.limit;
-            }
-
-            let taxAmount = (energyCharge + state.fixedCharge) * (state.taxRate / 100);
-            let total = energyCharge + state.fixedCharge + taxAmount;
-
-            state.billDetails = { energyCharge, fixedCharge: state.fixedCharge, taxAmount, total, slabBreakdown: breakdown };
-
-            // 4. Update UI
-            setTimeout(() => {
-                updateUI();
-                saveSession();
-            }, 100); // slight delay for smooth visual transition
-        }
-
-        function updateUI() {
-            // Animate Summary
-            animateValue('total-bill', prevBillAmount, state.billDetails.total, 800);
-            animateValue('summary-energy-charge', parseFloat(document.getElementById('summary-energy-charge').innerText.replace('₹','').replace(/,/g,'')) || 0, state.billDetails.energyCharge, 800);
-            animateValue('summary-fixed-charge', parseFloat(document.getElementById('summary-fixed-charge').innerText.replace('₹','').replace(/,/g,'')) || 0, state.billDetails.fixedCharge, 800);
-            animateValue('summary-tax-amount', parseFloat(document.getElementById('summary-tax-amount').innerText.replace('₹','').replace(/,/g,'')) || 0, state.billDetails.taxAmount, 800);
-            
-            document.getElementById('summary-units').innerText = state.totalUnits.toFixed(1);
-            document.getElementById('summary-tax-percent').innerText = state.taxRate;
-            document.getElementById('yearly-projection').innerText = '₹' + formatNumber(state.billDetails.total * 12);
-
-            if(state.currentMode === 'meter') document.getElementById('meter-units-display').innerText = state.totalUnits.toFixed(1);
-            if(state.currentMode === 'appliance') document.getElementById('appliance-units-display').innerText = state.totalUnits.toFixed(1);
-
-            prevBillAmount = state.billDetails.total;
-
-            // Efficiency Badge
-            const badge = document.getElementById('efficiency-badge');
-            if(state.totalUnits === 0) {
-                badge.innerHTML = '<i class="fa-solid fa-moon"></i> No Usage';
-                badge.className = 'px-3 py-1.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-1.5 bg-slate-800 border border-slate-700 text-slate-400';
-            } else if(state.totalUnits <= 150) {
-                badge.innerHTML = '<i class="fa-solid fa-leaf"></i> Highly Efficient';
-                badge.className = 'px-3 py-1.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]';
-            } else if(state.totalUnits <= 400) {
-                badge.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> Average User';
-                badge.className = 'px-3 py-1.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400';
-            } else {
-                badge.innerHTML = '<i class="fa-solid fa-fire-flame-curved"></i> Heavy Consumer';
-                badge.className = 'px-3 py-1.5 rounded-full text-xs font-bold tracking-wide flex items-center gap-1.5 bg-red-500/10 border border-red-500/30 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]';
-            }
-
-            updateChartData();
-        }
-
-        // --- Breakdown Modal ---
-        function openBreakdownModal() {
-            const container = document.getElementById('breakdown-content');
-            container.innerHTML = '';
-            
-            if(state.billDetails.slabBreakdown.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 text-center py-4">No usage to calculate.</p>';
-            } else {
-                state.billDetails.slabBreakdown.forEach(b => {
-                    container.innerHTML += `
-                        <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                            <div>
-                                <span class="text-xs text-slate-500 uppercase tracking-widest block mb-0.5">Slab: ${b.range}</span>
-                                <span class="text-white font-medium">${b.units} units × ₹${b.rate}</span>
-                            </div>
-                            <span class="text-white font-bold text-base">₹${b.cost}</span>
-                        </div>
-                    `;
-                });
+                debtors[i].amount -= transfer;
+                creditors[j].amount -= transfer;
                 
-                // Add fixed & tax
-                container.innerHTML += `
-                    <div class="flex justify-between items-center border-b border-white/5 pb-2 pt-2">
-                        <span class="text-slate-400">Fixed Charge</span>
-                        <span class="text-white font-bold">₹${state.billDetails.fixedCharge.toFixed(2)}</span>
-                    </div>
-                    <div class="flex justify-between items-center border-b border-white/5 pb-2 pt-2">
-                        <span class="text-slate-400">Tax (${state.taxRate}%)</span>
-                        <span class="text-white font-bold">₹${state.billDetails.taxAmount.toFixed(2)}</span>
-                    </div>
-                    <div class="flex justify-between items-center pt-3">
-                        <span class="text-primary font-bold uppercase tracking-widest text-xs">Total Estimated</span>
-                        <span class="text-primary font-display font-bold text-2xl">₹${state.billDetails.total.toFixed(2)}</span>
-                    </div>
-                `;
+                if(debtors[i].amount < 0.01) i++;
+                if(creditors[j].amount < 0.01) j++;
             }
 
-            const modal = document.getElementById('breakdown-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => modal.classList.add('opacity-100'), 50);
+            renderUI(total, perHead, settlements);
         }
 
-        function closeBreakdownModal() {
-            const modal = document.getElementById('breakdown-modal');
-            modal.classList.remove('opacity-100');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // --- Tariff UI ---
-        function renderTariffSettings() {
-            const container = document.getElementById('slabs-container');
-            container.innerHTML = '';
+        function renderUI(total, perHead, settlements) {
+            document.getElementById('ui-total').innerText = `₹${Math.round(total)}`;
             
-            // Auto-sort to prevent overlap technically
-            state.tariffSlabs.sort((a,b) => a.limit - b.limit);
-
-            state.tariffSlabs.forEach((slab, index) => {
-                let prevLimit = index === 0 ? 0 : state.tariffSlabs[index-1].limit;
-                let isLast = slab.limit > 900000;
-                let rangeText = isLast ? `Above ${prevLimit} units` : `${prevLimit+1} - ${slab.limit} units`;
-                if(index === 0) rangeText = `0 - ${slab.limit} units`;
-
-                container.innerHTML += `
-                    <div class="flex items-center gap-3 md:gap-4 bg-slate-800/40 p-3 md:p-4 rounded-xl border border-white/5 hover:border-primary/30 transition-colors group">
-                        <div class="flex-grow">
-                            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
-                                <span>${rangeText}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-semibold text-slate-500">Up to</span>
-                                <input type="number" value="${isLast ? '' : slab.limit}" ${isLast ? 'disabled placeholder="∞"' : ''} 
-                                    class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm font-medium focus:outline-none focus:border-primary transition-colors text-center"
-                                    onchange="updateSlab(${slab.id}, 'limit', this.value)">
-                                <span class="text-xs font-semibold text-slate-500">kWh</span>
-                            </div>
+            const setEl = document.getElementById('ui-settlements');
+            if(expenses.length === 0) {
+                setEl.innerHTML = '<p class="text-center text-sm text-slate-400 py-3 font-light">Awaiting first transaction...</p>';
+            } else if (settlements.length === 0) {
+                setEl.innerHTML = '<div class="flex items-center justify-center gap-2 text-[#16A34A] font-medium py-3 bg-[#16A34A]/10 rounded-xl border border-[#16A34A]/20">All settled up!</div>';
+            } else {
+                setEl.innerHTML = settlements.map(s => `
+                    <div class="flex items-center justify-between text-sm expense-card-enter bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <span class="font-medium text-[#DC2626]">${s.from}</span>
+                            <span class="text-slate-400 text-xs">-></span>
+                            <span class="font-medium text-[#16A34A]">${s.to}</span>
                         </div>
-                        <div class="flex flex-col items-end gap-1">
-                            <div class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-2 rounded-lg border border-slate-700/50 group-hover:border-primary/50 transition-colors">
-                                <span class="text-sm font-bold text-slate-500">₹</span>
-                                <input type="number" step="0.1" min="0" value="${slab.rate}" 
-                                    class="w-14 bg-transparent text-white text-sm font-bold focus:outline-none focus:text-primary text-right"
-                                    onchange="updateSlab(${slab.id}, 'rate', this.value)">
-                            </div>
-                        </div>
-                        ${index > 0 && !isLast ? `
-                        <button onclick="removeSlab(${slab.id})" class="text-slate-600 hover:text-red-400 ml-1 transition-colors" title="Remove Slab">
-                            <i class="fa-solid fa-trash"></i>
+                        <span class="font-bold text-[#2563EB] bg-[#2563EB]/10 px-2.5 py-1 rounded-lg">₹${s.amount}</span>
+                    </div>
+                `).join('');
+            }
+
+            const histEl = document.getElementById('ui-history');
+            histEl.innerHTML = expenses.slice().reverse().map(e => `
+                <div class="flex justify-between items-center py-3 border-b border-slate-100 last:border-0 group">
+                    <div>
+                        <p class="text-sm font-medium text-slate-700">${e.desc}</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Paid by <span class="text-[#4F46E5] font-semibold">${e.payer}</span></p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold text-slate-800">₹${e.amount}</span>
+                        <button onclick="deleteExpense(${e.id})" class="text-slate-300 hover:text-[#DC2626] transition-colors p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                         </button>
-                        ` : '<div class="w-5"></div>'}
                     </div>
-                `;
-            });
+                </div>
+            `).join('');
         }
 
-        function updateSlab(id, field, value) {
-            const slab = state.tariffSlabs.find(s => s.id === id);
-            if(slab) {
-                let val = parseFloat(value);
-                if(val < 0) val = 0; // Prevent negative
-                if(field === 'limit') slab.limit = value === '' ? 999999 : val;
-                else slab.rate = val || 0;
-                
-                state.tariffSlabs.sort((a,b) => a.limit - b.limit);
-                renderTariffSettings(); 
-                debounceCalc();
-            }
-        }
-
-        function removeSlab(id) {
-            state.tariffSlabs = state.tariffSlabs.filter(s => s.id !== id);
-            renderTariffSettings();
-            debounceCalc();
-        }
-
-        function addSlab() {
-            const normalSlabs = state.tariffSlabs.filter(s => s.limit <= 900000);
-            const highestCurrentLimit = normalSlabs.length > 0 ? Math.max(...normalSlabs.map(s => s.limit)) : 0;
-            state.tariffSlabs.push({ id: Date.now(), limit: highestCurrentLimit + 100, rate: 6.0 });
-            state.tariffSlabs.sort((a,b) => a.limit - b.limit);
-            renderTariffSettings();
-            debounceCalc();
-            showToast("New slab added. Adjust limits to avoid overlaps.", "success");
-        }
-
-        // --- Appliance UI ---
-        function renderApplianceList() {
-            const container = document.getElementById('appliance-list');
-            const searchTerm = document.getElementById('appliance-search').value.toLowerCase();
-            
-            container.innerHTML = '';
-            
-            // Sort by consumption
-            let displayApps = [...state.appliances].sort((a,b) => b.monthlyConsumption - a.monthlyConsumption);
-            
-            // Filter
-            if(searchTerm) {
-                displayApps = displayApps.filter(a => a.name.toLowerCase().includes(searchTerm));
-            }
-
-            if(displayApps.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 bg-slate-800/20 rounded-2xl border border-dashed border-white/10 text-slate-500 text-sm">No devices found.</div>`;
+        function shareToGroup() {
+            if(expenses.length === 0) {
+                showToast("Add an expense first!", "#DC2626"); 
                 return;
             }
 
-            displayApps.forEach(app => {
-                let mKwh = ((app.power * app.hours * app.qty) / 1000) * 30;
-                container.innerHTML += `
-                    <div class="bg-slate-800/40 border border-white/5 p-4 rounded-xl flex items-center gap-3 group hover:border-white/10 hover:bg-slate-800/60 transition-all">
-                        <div class="h-10 w-10 rounded-lg bg-slate-900 flex items-center justify-center shrink-0 border border-white/5 shadow-inner">
-                            <i class="fa-solid ${app.icon}" style="color: ${app.color}"></i>
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <div class="flex justify-between items-start mb-1">
-                                <h4 class="text-sm font-semibold text-white truncate pr-2">${app.name}</h4>
-                                <button onclick="removeAppliance(${app.id})" class="text-slate-500 hover:text-red-400 transition-colors shrink-0">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </div>
-                            <div class="text-[10px] text-slate-400 flex flex-wrap gap-2 uppercase tracking-wide">
-                                <span>${app.power}W × ${app.qty}</span>
-                                <span class="text-primary ml-auto font-bold">${mKwh.toFixed(1)} kWh/mo</span>
-                            </div>
-                            <div class="mt-2 flex items-center gap-2">
-                                <input type="range" min="0" max="24" step="0.5" value="${app.hours}" 
-                                    onchange="updateApplianceHours(${app.id}, this.value)"
-                                    oninput="this.nextElementSibling.innerText = this.value + 'h'"
-                                    class="flex-grow h-1">
-                                <span class="text-xs text-slate-300 w-8 text-right font-medium">${app.hours}h</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function updateApplianceHours(id, newHours) {
-            const app = state.appliances.find(a => a.id === id);
-            if(app) {
-                app.hours = parseFloat(newHours);
-                renderApplianceList(); // Update UI
-                debounceCalc(); // Recalculate
-            }
-        }
-
-        function removeAppliance(id) {
-            state.appliances = state.appliances.filter(a => a.id !== id);
-            renderApplianceList();
-            debounceCalc();
-            showToast("Device removed", "info");
-        }
-
-        // --- Modals (Appliance) ---
-        let selectedPresetColor = '#cbd5e1';
-        let selectedPresetIcon = 'fa-plug';
-
-        function openAddApplianceModal() {
-            document.getElementById('add-appliance-modal').classList.remove('hidden');
-            document.getElementById('add-appliance-modal').classList.add('flex');
-            setTimeout(() => document.getElementById('add-appliance-modal').classList.add('opacity-100'), 50);
+            let total = 0;
+            expenses.forEach(e => total += e.amount);
+            let perHead = total / 4;
             
-            // Clear inputs
-            document.getElementById('new-app-name').value = '';
-            document.getElementById('new-app-power').value = '';
-            document.getElementById('new-app-qty').value = '1';
-            document.getElementById('new-app-hours').value = '8';
-            document.getElementById('modal-hours-display').innerText = '8';
-            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('border-primary', 'bg-slate-700'));
-        }
+            // Premium structured format based on user request (Emojis Removed)
+            let message = `ASTRASPLIT • Trip Summary\n`;
+            message += `━━━━━━━━━━━━━━━━━━\n`;
+            message += `Total Spent: ₹${Math.round(total)}\n`;
+            message += `Split Between: 4 Members\n`;
+            message += `Per Person: ₹${Math.round(perHead)}\n`;
+            message += `━━━━━━━━━━━━━━━━━━\n`;
+            message += `Expenses Recorded\n`;
 
-        function closeAddApplianceModal() {
-            document.getElementById('add-appliance-modal').classList.remove('opacity-100');
-            setTimeout(() => document.getElementById('add-appliance-modal').classList.add('hidden'), 300);
-        }
-
-        function selectPreset(type) {
-            const preset = presetAppliances[type];
-            document.getElementById('new-app-name').value = preset.name;
-            document.getElementById('new-app-power').value = preset.power;
-            selectedPresetIcon = preset.icon;
-            selectedPresetColor = preset.color;
-            
-            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('border-primary', 'bg-slate-700'));
-            event.currentTarget.classList.add('border-primary', 'bg-slate-700');
-        }
-
-        function addAppliance() {
-            const name = document.getElementById('new-app-name').value || 'Custom Device';
-            const power = parseFloat(document.getElementById('new-app-power').value);
-            const qty = parseInt(document.getElementById('new-app-qty').value) || 1;
-            const hours = parseFloat(document.getElementById('new-app-hours').value) || 0;
-
-            if(!power || power <= 0) {
-                const input = document.getElementById('new-app-power');
-                input.classList.add('input-error');
-                setTimeout(()=> input.classList.remove('input-error'), 1000);
-                return;
-            }
-
-            // Duplicate Check
-            const existing = state.appliances.find(a => a.name.toLowerCase() === name.toLowerCase());
-            if(existing) {
-                showToast("A device with this name already exists.", "alert");
-                return;
-            }
-
-            state.appliances.push({
-                id: Date.now(), name, power, qty, hours,
-                icon: selectedPresetIcon, color: selectedPresetColor,
-                monthlyConsumption: 0 // Will be calc'd
+            expenses.forEach((e) => {
+                message += `• ${e.desc} — ₹${e.amount}\n`;
+                message += `Paid by: ${e.payer}\n`;
             });
 
-            selectedPresetIcon = 'fa-plug';
-            selectedPresetColor = '#cbd5e1';
-
-            closeAddApplianceModal();
-            renderApplianceList();
-            debounceCalc();
-            showToast(`${name} added successfully!`, "success");
-        }
-
-        // --- Charts & Export ---
-        function toggleChart(type) {
-            state.chartView = type;
-            document.getElementById('btn-chart-cost').classList.toggle('bg-slate-700', type === 'cost');
-            document.getElementById('btn-chart-cost').classList.toggle('text-white', type === 'cost');
-            document.getElementById('btn-chart-cost').classList.toggle('text-slate-400', type !== 'cost');
+            message += `━━━━━━━━━━━━━━━━━━\n`;
+            message += `Final Settlement\n`;
             
-            document.getElementById('btn-chart-units').classList.toggle('bg-slate-700', type === 'units');
-            document.getElementById('btn-chart-units').classList.toggle('text-white', type === 'units');
-            document.getElementById('btn-chart-units').classList.toggle('text-slate-400', type !== 'units');
+            let paidMap = { "Omm": 0, "Satyapragnya": 0, "Biswaranjan": 0, "Neeraj": 0 };
+            expenses.forEach(exp => paidMap[exp.payer] += exp.amount);
             
-            updateChartData();
-        }
-
-        function initChart() {
-            Chart.defaults.color = '#94a3b8'; 
-            Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+            let debtors = [], creditors = [];
+            friends.forEach(f => {
+                let net = paidMap[f] - perHead;
+                if(net < -0.01) debtors.push({ name: f, amount: Math.abs(net) });
+                else if(net > 0.01) creditors.push({ name: f, amount: net });
+            });
             
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            mainChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 0, borderRadius: 5, hoverOffset: 10 }] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8, padding: 15, font: {size: 11} } },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)', titleFont: { size: 12 }, bodyFont: { family: "'Outfit', sans-serif", size: 14, weight: 'bold' },
-                            padding: 12, cornerRadius: 8, displayColors: true,
-                            callbacks: {
-                                label: function(c) { 
-                                    let val = c.raw;
-                                    let isCost = state.chartView === 'cost';
-                                    let total = c.dataset.data.reduce((a, b) => a + b, 0);
-                                    let percent = total > 0 ? ((val / total) * 100).toFixed(1) + '%' : '0%';
-                                    return isCost ? ` ₹${formatNumber(val)} (${percent})` : ` ${val.toFixed(1)} kWh (${percent})`; 
-                                }
-                            }
-                        }
-                    }
+            debtors.sort((a,b) => b.amount - a.amount);
+            creditors.sort((a,b) => b.amount - a.amount);
+            
+            let settlementCount = 0;
+            let i = 0, j = 0;
+            
+            while(i < debtors.length && j < creditors.length) {
+                let t = Math.min(debtors[i].amount, creditors[j].amount);
+                if(t > 0.01) {
+                    message += `• ${debtors[i].name} -> ₹${Math.round(t)} to ${creditors[j].name}\n`;
+                    settlementCount++;
                 }
-            });
-        }
-
-        function updateChartData() {
-            if(!mainChartInstance) return;
-
-            if(state.chartView === 'cost') {
-                mainChartInstance.config.type = 'doughnut';
-                mainChartInstance.data.labels = ['Energy Cost', 'Fixed Charge', 'Taxes & Duty'];
-                mainChartInstance.data.datasets[0].data = [state.billDetails.energyCharge, state.billDetails.fixedCharge, state.billDetails.taxAmount];
-                mainChartInstance.data.datasets[0].backgroundColor = ['#6366f1', '#a855f7', '#14b8a6'];
-                mainChartInstance.options.scales = { x: {display:false}, y: {display:false} };
-                mainChartInstance.options.plugins.legend.display = true;
-            } else {
-                // Device usage view - works best as bar chart if in appliance mode
-                if(state.currentMode === 'appliance' && state.appliances.length > 0) {
-                    mainChartInstance.config.type = 'bar';
-                    let sorted = [...state.appliances].sort((a,b)=>b.monthlyConsumption - a.monthlyConsumption).slice(0,5);
-                    mainChartInstance.data.labels = sorted.map(a => a.name.split(' ')[0]);
-                    mainChartInstance.data.datasets[0].data = sorted.map(a => a.monthlyConsumption);
-                    mainChartInstance.data.datasets[0].backgroundColor = sorted.map(a => a.color || '#6366f1');
-                    mainChartInstance.options.scales = { 
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, border:{display:false} },
-                        x: { grid: { display: false }, border:{display:false} }
-                    };
-                    mainChartInstance.options.plugins.legend.display = false;
-                } else {
-                    // fallback if meter mode
-                    mainChartInstance.config.type = 'doughnut';
-                    mainChartInstance.data.labels = ['Total Units'];
-                    mainChartInstance.data.datasets[0].data = [state.totalUnits];
-                    mainChartInstance.data.datasets[0].backgroundColor = ['#3b82f6'];
-                    mainChartInstance.options.scales = { x: {display:false}, y: {display:false} };
-                    mainChartInstance.options.plugins.legend.display = false;
-                }
+                debtors[i].amount -= t;
+                creditors[j].amount -= t;
+                if(debtors[i].amount < 0.01) i++;
+                if(creditors[j].amount < 0.01) j++;
             }
-            mainChartInstance.update();
+
+            if(settlementCount === 0) {
+                message += `All settled up!\n`;
+            }
+            
+            message += `━━━━━━━━━━━━━━━━━━\n`;
+            message += `Settlement Optimized\n`;
+            message += `Powered by ASTRASPLIT`;
+
+            // Final bulletproof encoding of the single string
+            const encodedMessage = encodeURIComponent(message);
+            
+            showToast("Opening WhatsApp...", "#16A34A"); 
+            
+            // wa.me is the most stable protocol for both Web and Mobile apps
+            const whatsappURL = `https://wa.me/?text=${encodedMessage}`;
+            
+            const link = document.createElement('a');
+            link.href = whatsappURL;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        function copyBill() {
-            const btn = document.getElementById('copy-btn');
-            const text = `AstraBill Estimate:\nTotal Bill: ₹${formatNumber(state.billDetails.total)}\nUnits Consumed: ${state.totalUnits.toFixed(1)} kWh\nEnergy Charge: ₹${formatNumber(state.billDetails.energyCharge)}\nFixed Charge: ₹${state.billDetails.fixedCharge}\nTax: ₹${state.billDetails.taxAmount.toFixed(2)}\n\nGenerated by AstraBill Predictor.`;
+        function showToast(text, color) {
+            const toast = document.getElementById("toast");
+            const msg = document.getElementById("toast-msg");
             
-            navigator.clipboard.writeText(text).then(() => {
-                btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> Copied!';
-                showToast("Data copied to clipboard!", "success");
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Data';
-                }, 2000);
-            }).catch(err => {
-                // Fallback for strict iframes where clipboard API is blocked
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
+            toast.style.borderColor = color;
+            toast.style.color = color;
+            toast.style.boxShadow = `0 10px 25px -5px ${color}33`;
+            
+            msg.innerText = text;
+            
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        let calcExpression = '';
+
+        function openCalc() {
+            const modal = document.getElementById('calc-modal');
+            const container = document.getElementById('calc-container');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                container.classList.remove('scale-95');
+                container.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeCalc() {
+            const modal = document.getElementById('calc-modal');
+            const container = document.getElementById('calc-container');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            container.classList.remove('scale-100');
+            container.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function calcAction(val) {
+            if(calcExpression === 'Error') calcExpression = '';
+
+            if (val === 'C') {
+                calcExpression = '';
+            } else if (val === 'del') {
+                calcExpression = calcExpression.slice(0, -1);
+            } else if (val === '=') {
                 try {
-                    document.execCommand('copy');
-                    btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> Copied!';
-                    showToast("Data copied via fallback!", "success");
-                } catch (e) {
-                    showToast("Failed to copy data.", "alert");
+                    let expr = calcExpression.replace(/×/g, '*').replace(/÷/g, '/');
+                    let result = Function('"use strict";return (' + expr + ')')();
+                    if (result === Infinity || isNaN(result)) throw new Error('Invalid');
+                    calcExpression = (Math.round(result * 100) / 100).toString();
+                } catch(e) {
+                    calcExpression = 'Error';
                 }
-                document.body.removeChild(textArea);
-                setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Data'; }, 2000);
-            });
+            } else {
+                const lastChar = calcExpression.slice(-1);
+                const operators = ['+', '-', '×', '÷'];
+                if (operators.includes(val) && operators.includes(lastChar)) {
+                    calcExpression = calcExpression.slice(0, -1) + val;
+                } else {
+                    calcExpression += val;
+                }
+            }
+
+            document.getElementById('calc-screen').innerText = calcExpression === '' ? '0' : calcExpression;
         }
+
+        function useCalcValue() {
+            if(calcExpression !== '' && calcExpression !== 'Error') {
+                calcAction('=');
+                let finalVal = parseFloat(calcExpression);
+                if(!isNaN(finalVal) && finalVal > 0) {
+                    const amtInput = document.getElementById('amt');
+                    amtInput.value = finalVal;
+                    amtInput.focus();
+                }
+            }
+            closeCalc();
+        }
+
+
+        processData();
     </script>
 </body>
 </html>
