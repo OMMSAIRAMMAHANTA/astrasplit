@@ -1,154 +1,67 @@
-⚡ AstraBill – Smart Electricity Bill Calculator
+AstraSplit - Premium Trip Manager
 
-AstraBill is a user-friendly web-based electricity bill calculator that helps users estimate their monthly electricity bill using unit readings or appliance-based calculations.
+AstraSplit is a fast, beautiful, and highly optimized single-file web application designed to track group trip expenses and automatically calculate the smartest way to settle debts.
 
-It provides clear breakdowns, slab-based tariff support, real-time updates, and visual insights to make electricity billing easy to understand.
+Built with a focus on premium UI/UX and seamless WhatsApp integration, it eliminates the headache of manual math after a trip.
 
-🚀 Features
-🔹 1. Multiple Calculation Modes
+✨ Key Features
 
-Meter Reading Mode – Calculate units using previous and current meter readings.
+🧠 Smart Settlement Engine: Uses a greedy algorithm to calculate "who owes whom". Instead of every person paying multiple small amounts, the engine optimizes debts to ensure the absolute minimum number of UPI transactions are needed.
 
-Appliance Mode – Calculate monthly consumption based on device power, usage hours, and quantity.
+📱 Direct WhatsApp Integration: One click generates a clean, professional, emoji-free text summary of all expenses and final settlements, then automatically opens WhatsApp ready to send to your group.
 
-Custom Tariff Mode – Define slab rates, fixed charges, and tax percentages.
+🧮 Built-in Smart Calculator: A floating glassmorphism calculator allows you to tally up multiple small expenses (e.g., snacks + tea + tickets) and directly inject the final amount into the expense form.
 
-🔹 2. Smart Tariff Slab System
+💎 Premium "Fintech" UI: Designed with a "Trusted Premium" color palette (Primary Blue, Soft Indigo) and modern glassmorphism (frosted glass) effects. Looks and feels like a funded SaaS startup app.
 
-Add / remove custom slabs
+⚡ Zero-Backend & Offline Ready: Everything runs entirely in the browser using Vanilla JavaScript. No database required, no server delays, and 100% privacy.
 
-Slab-wise calculation breakdown
+🛠️ Tech Stack
 
-Fixed charge support
+HTML5: Semantic structure.
 
-Tax percentage support
+Tailwind CSS (via CDN): Rapid, responsive, and modern styling.
 
-Automatic slab validation
+Vanilla JavaScript: DOM manipulation, transaction state management, and settlement algorithms.
 
-🔹 3. Real-Time Calculation
+Google Fonts: Inter for clean data readability and Poppins for strong, trustworthy headings.
 
-Instant updates on input change
+🚀 How to Use
 
-No manual calculate button needed
+Open the App: Simply double-click index.html to open it in any modern web browser. No installation or setup required.
 
-Live bill summary updates
+Add an Expense: * Enter what the expense was (e.g., "Auto to Khandagiri").
 
-🔹 4. Detailed Bill Breakdown
+Enter the amount (use the built-in Calc if needed).
 
-Total units consumed
+Select who paid from the dropdown.
 
-Energy charge
+Click Add to Bill.
 
-Fixed charge
+View Live Settlements: The app instantly updates the "Total Spent" and recalculates the most efficient settlement paths.
 
-Tax amount
+Share Report: Click the Send Bill via WhatsApp button at the bottom. A clean summary will be generated and WhatsApp will open automatically.
 
-Final payable amount
+📐 The Settlement Algorithm
 
-Slab-wise charge explanation
+AstraSplit uses a customized debt-simplification algorithm:
 
-🔹 5. Appliance Manager
+Calculates the Total Cost and the Per Head share.
 
-Add common appliances (AC, Fan, TV, etc.)
+Maps how much each person actually paid vs. how much they were supposed to pay.
 
-Edit daily usage hours
+Separates the group into two lists: Debtors (people who owe money) and Creditors (people who need to get paid).
 
-Auto monthly kWh calculation
+Sorts both lists by amount and iteratively matches the largest debtor with the largest creditor until all balances reach ₹0.
 
-Highest consuming appliance highlight
+🤝 Project Members (Hardcoded for convenience)
 
-🔹 6. Visual Insights
+Omm Sairam Mahanta
 
-Cost Breakdown Chart (Doughnut)
+Satyapragnya Samal
 
-Appliance Consumption Chart (Bar)
+Biswaranjan Sahoo
 
-Percentage contribution view
+Neeraj Behera
 
-🔹 7. User-Friendly Interface
-
-Clean and minimal layout
-
-Step-by-step flow
-
-Clear input labels (Watts, kWh, ₹)
-
-Mobile responsive design
-
-Smooth animations
-
-🔹 8. Smart Alerts
-
-High consumption warning
-
-Slab crossing alert
-
-Usage insights
-
-🔹 9. Data Controls
-
-Reset option
-
-Local session persistence
-
-Print-friendly layout
-
-🧮 How Bill Is Calculated
-
-Units Consumed = Current Reading – Previous Reading
-OR
-Monthly Appliance Consumption (kWh)
-
-Energy Charge = Units × Slab Rate
-
-Total = Energy Charge + Fixed Charge + Tax
-
-Tax = (Energy Charge + Fixed Charge) × Tax %
-
-📊 Technology Stack
-
-HTML5
-
-CSS3 (Tailwind CSS)
-
-JavaScript (Vanilla JS)
-
-Chart.js
-
-🎯 Project Objective
-
-The goal of AstraBill is to:
-
-Simplify electricity bill calculation
-
-Help users understand slab-based billing
-
-Provide transparency in energy consumption
-
-Offer a clean and interactive UI experience
-
-📱 Responsive Design
-
-AstraBill works on:
-
-Desktop
-
-Tablet
-
-Mobile devices
-
-🛠 Future Improvements
-
-PDF bill export
-
-Yearly usage comparison
-
-Dark mode toggle
-
-Data saving with login system
-
-Solar energy offset calculation
-
-👨‍💻 Author
-
-Developed as a smart electricity billing system project.
+Designed & Built for seamless trip management.
